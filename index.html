@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranking da Comida | David & Bruna</title>
+  <meta name="theme-color" content="#ff7a1a" />
+  <style>
+    :root {
+      --bg: #fff7ed;
+      --bg-2: #fff1df;
+      --card: rgba(255, 255, 255, 0.9);
+      --text: #27120a;
+      --muted: #76523f;
+      --brand: #ff7a1a;
+      --brand-2: #ffb000;
+      --accent: #cf2f1f;
+      --green: #148a56;
+      --line: rgba(118, 82, 63, 0.2);
+      --shadow: 0 20px 60px rgba(124, 51, 10, 0.14);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 176, 0, 0.24), transparent 34rem),
+        radial-gradient(circle at 90% 10%, rgba(207, 47, 31, 0.15), transparent 28rem),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 30px;
+      background:
+        linear-gradient(135deg, rgba(255, 122, 26, 0.96), rgba(207, 47, 31, 0.92)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='white' fill-opacity='.12'%3E%3Ccircle cx='36' cy='34' r='10'/%3E%3Ccircle cx='116' cy='76' r='14'/%3E%3Cpath d='M35 118h84v12H35z'/%3E%3Cpath d='M52 108c6-18 48-18 54 0z'/%3E%3C/g%3E%3C/svg%3E");
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "🍔";
+      position: absolute;
+      right: 26px;
+      top: 22px;
+      font-size: clamp(70px, 15vw, 170px);
+      opacity: 0.16;
+      transform: rotate(-10deg);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: 0.88rem;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      max-width: 720px;
+      font-size: clamp(2.2rem, 6vw, 5.2rem);
+      line-height: 0.94;
+      letter-spacing: -0.065em;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0;
+      font-size: clamp(1rem, 2.8vw, 1.24rem);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.35fr;
+      gap: 20px;
+      margin-top: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .panel + .panel { margin-top: 18px; }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    h2, h3 { margin: 0; letter-spacing: -0.03em; }
+
+    h2 { font-size: 1.35rem; }
+    h3 { font-size: 1.05rem; }
+
+    .hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #563221;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 13px 14px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    textarea { resize: vertical; min-height: 92px; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(255, 122, 26, 0.8);
+      box-shadow: 0 0 0 4px rgba(255, 122, 26, 0.12);
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .score-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-radius: 20px;
+      padding: 15px;
+      margin: 16px 0;
+      background: linear-gradient(135deg, rgba(255, 122, 26, 0.13), rgba(255, 176, 0, 0.16));
+      border: 1px dashed rgba(255, 122, 26, 0.42);
+    }
+
+    .score-preview strong {
+      font-size: 2.1rem;
+      letter-spacing: -0.06em;
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 900;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--line);
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(72, 30, 9, 0.12); }
+    .btn:active { transform: translateY(0); }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), var(--accent)); color: #fff; border: 0; }
+    .btn.dark { background: #27120a; color: #fff; border: 0; }
+    .btn.green { background: var(--green); color: #fff; border: 0; }
+    .btn.ghost { background: transparent; }
+    .btn.small { padding: 9px 12px; min-height: 36px; font-size: 0.86rem; }
+    .btn.danger { color: #a31910; background: rgba(207, 47, 31, 0.08); border-color: rgba(207, 47, 31, 0.24); }
+
+    .category-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      font-weight: 800;
+      color: #492717;
+    }
+
+    .chip button {
+      width: 22px;
+      height: 22px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(207, 47, 31, 0.12);
+      color: #8c1f16;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      min-height: 92px;
+      border-radius: 22px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .stat span { display: block; color: var(--muted); font-weight: 800; font-size: 0.83rem; }
+    .stat strong { display: block; margin-top: 6px; font-size: 1.68rem; letter-spacing: -0.05em; }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      margin: 14px 0;
+      align-items: center;
+    }
+
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .rank-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: start;
+      border-radius: 24px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      overflow: hidden;
+    }
+
+    .rank-card.top-1 { background: linear-gradient(135deg, rgba(255, 176, 0, 0.22), rgba(255, 255, 255, 0.88)); }
+    .rank-card.top-2 { background: linear-gradient(135deg, rgba(190, 190, 190, 0.20), rgba(255, 255, 255, 0.88)); }
+    .rank-card.top-3 { background: linear-gradient(135deg, rgba(186, 107, 47, 0.18), rgba(255, 255, 255, 0.88)); }
+
+    .position {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: #27120a;
+      color: #fff;
+      font-weight: 1000;
+      letter-spacing: -0.03em;
+    }
+
+    .rank-main h3 {
+      margin-bottom: 4px;
+      font-size: 1.12rem;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 8px 0 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(255, 122, 26, 0.1);
+      color: #73320f;
+      font-weight: 800;
+      font-size: 0.76rem;
+    }
+
+    .note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 0.92rem;
+    }
+
+    .rank-score {
+      text-align: right;
+      min-width: 86px;
+    }
+
+    .rank-score strong {
+      display: block;
+      color: var(--accent);
+      font-size: 2.1rem;
+      line-height: 1;
+      letter-spacing: -0.08em;
+    }
+
+    .rank-score span { color: var(--muted); font-size: 0.78rem; font-weight: 900; }
+
+    .card-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      border-top: 1px solid rgba(118, 82, 63, 0.13);
+      padding-top: 12px;
+    }
+
+    .empty {
+      border: 2px dashed rgba(118, 82, 63, 0.25);
+      border-radius: 24px;
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .backup-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(120px);
+      background: #27120a;
+      color: #fff;
+      padding: 13px 18px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      z-index: 10;
+      transition: .25s ease;
+      font-weight: 800;
+      text-align: center;
+      width: max-content;
+      max-width: calc(100vw - 30px);
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      padding: 26px 10px 6px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 940px) {
+      .layout { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 650px) {
+      .app { padding: 14px; }
+      .hero { padding: 23px; border-radius: 28px; }
+      .panel { padding: 16px; }
+      .grid, .score-row, .toolbar { grid-template-columns: 1fr; }
+      .category-form { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .stat { min-height: 78px; padding: 13px; }
+      .stat strong { font-size: 1.34rem; }
+      .rank-card { grid-template-columns: auto 1fr; }
+      .rank-score { grid-column: 1 / -1; text-align: left; display: flex; align-items: end; gap: 8px; }
+      .card-actions { justify-content: flex-start; flex-wrap: wrap; }
+      .btn { width: 100%; }
+      .hero-actions .btn, .actions .btn, .backup-row .btn { width: auto; flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <span class="eyebrow">🍟 Ranking particular</span>
+      <h1>Ranking da Comida</h1>
+      <p>Cadastre categorias, avalie lugares, deliverys e comidas, compare notas e gere o ranking para mandar no WhatsApp.</p>
+      <div class="hero-actions">
+        <a class="btn dark" href="#formPanel">➕ Nova avaliação</a>
+        <a class="btn" href="#rankingPanel">🏆 Ver ranking</a>
+        <button class="btn green" type="button" id="shareWhatsappTop">📲 WhatsApp</button>
+      </div>
+    </section>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="layout">
+      <div>
+        <section class="panel" id="formPanel">
+          <div class="panel-title">
+            <div>
+              <h2 id="formTitle">Nova avaliação</h2>
+              <p class="hint">Se marcar como delivery, a avaliação de local desaparece automaticamente.</p>
+            </div>
+          </div>
+
+          <form id="reviewForm">
+            <input type="hidden" id="editingId" />
+            <div class="grid">
+              <div class="field full">
+                <label for="itemName">Nome da comida ou pedido</label>
+                <input id="itemName" required placeholder="Ex.: Smash bacon duplo, batata cheddar..." />
+              </div>
+              <div class="field">
+                <label for="placeName">Lugar / estabelecimento</label>
+                <input id="placeName" required placeholder="Ex.: Hamburgueria X" />
+              </div>
+              <div class="field">
+                <label for="city">Cidade</label>
+                <input id="city" placeholder="Ex.: Paulo Afonso" />
+              </div>
+              <div class="field">
+                <label for="categoryId">Categoria</label>
+                <select id="categoryId" required></select>
+              </div>
+              <div class="field">
+                <label for="evaluator">Quem avaliou?</label>
+                <select id="evaluator">
+                  <option>David & Bruna</option>
+                  <option>David</option>
+                  <option>Bruna</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="consumptionType">Como consumiu?</label>
+                <select id="consumptionType">
+                  <option value="local">No local</option>
+                  <option value="delivery">Delivery / retirada</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="reviewDate">Data</label>
+                <input id="reviewDate" type="date" required />
+              </div>
+            </div>
+
+            <div class="score-preview">
+              <div>
+                <h3>Nota final automática</h3>
+                <p class="hint">Média das notas preenchidas. Local só entra quando não for delivery.</p>
+              </div>
+              <strong id="scorePreview">0,0</strong>
+            </div>
+
+            <div class="score-row">
+              <div class="field">
+                <label for="tasteScore">Sabor</label>
+                <input class="score-input" id="tasteScore" type="number" min="0" max="10" step="0.1" required placeholder="0 a 10" />
+              </div>
+              <div class="field">
+                <label for="priceScore">Preço / benefício</label>
+                <input class="score-input" id="priceScore" type="number" min="0" max="10" step="0.1" required placeholder="0 a 10" />
+              </div>
+              <div class="field">
+                <label for="serviceScore">Atendimento</label>
+                <input class="score-input" id="serviceScore" type="number" min="0" max="10" step="0.1" required placeholder="0 a 10" />
+              </div>
+              <div class="field">
+                <label for="presentationScore">Apresentação</label>
+                <input class="score-input" id="presentationScore" type="number" min="0" max="10" step="0.1" required placeholder="0 a 10" />
+              </div>
+              <div class="field">
+                <label for="portionScore">Porção / saciedade</label>
+                <input class="score-input" id="portionScore" type="number" min="0" max="10" step="0.1" required placeholder="0 a 10" />
+              </div>
+              <div class="field" id="localScoreBox">
+                <label for="localScore">Local / ambiente</label>
+                <input class="score-input" id="localScore" type="number" min="0" max="10" step="0.1" placeholder="0 a 10" />
+              </div>
+            </div>
+
+            <div class="grid" style="margin-top:12px">
+              <div class="field full">
+                <label for="comment">Observação</label>
+                <textarea id="comment" placeholder="Ex.: carne boa, molho excelente, batata chegou fria, ambiente bonito..."></textarea>
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top:16px">
+              <button class="btn primary" type="submit" id="saveBtn">Salvar avaliação</button>
+              <button class="btn ghost" type="button" id="cancelEditBtn" hidden>Cancelar edição</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <div>
+              <h2>Categorias</h2>
+              <p class="hint">Crie ranking de hambúrguer, batata, pizza, sobremesa e o que quiser.</p>
+            </div>
+          </div>
+          <form class="category-form" id="categoryForm">
+            <input id="newCategory" placeholder="Nova categoria: ex. Pastel" required />
+            <button class="btn primary" type="submit">Criar</button>
+          </form>
+          <div class="chips" id="categoryChips"></div>
+        </section>
+      </div>
+
+      <div>
+        <section class="panel" id="rankingPanel">
+          <div class="panel-title">
+            <div>
+              <h2>Ranking salvo</h2>
+              <p class="hint">Filtre por categoria, pesquise e gere o texto do ranking para compartilhar.</p>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <select id="categoryFilter"></select>
+            <input id="searchInput" placeholder="Pesquisar comida, lugar ou cidade..." />
+            <button class="btn green" type="button" id="shareWhatsapp">📲 Gerar ranking</button>
+          </div>
+
+          <div class="ranking-list" id="rankingList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <div>
+              <h2>Backup</h2>
+              <p class="hint">Baixe uma cópia do ranking ou importe depois, caso troque de celular ou navegador.</p>
+            </div>
+          </div>
+          <div class="backup-row">
+            <button class="btn" type="button" id="exportBtn">⬇️ Baixar backup</button>
+            <label class="btn" for="importFile">⬆️ Importar backup</label>
+            <input id="importFile" type="file" accept="application/json" hidden />
+            <button class="btn danger" type="button" id="resetBtn">🗑️ Limpar tudo</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer">Feito para David & Bruna • Dados salvos neste navegador. Para nuvem real, conectar ao Supabase/Firebase.</p>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "ranking-comida-david-bruna-v1";
+
+    const defaultCategories = [
+      "Hambúrguer", "Batata", "Pizza", "Açaí", "Sobremesa", "Sushi", "Pastel", "Café", "Restaurante", "Outro"
+    ];
+
+    let state = { categories: [], reviews: [] };
+
+    const $ = (id) => document.getElementById(id);
+    const today = () => new Date().toISOString().slice(0, 10);
+    const uid = () => crypto?.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
+
+    const els = {
+      stats: $("stats"),
+      reviewForm: $("reviewForm"),
+      categoryForm: $("categoryForm"),
+      categoryId: $("categoryId"),
+      categoryFilter: $("categoryFilter"),
+      categoryChips: $("categoryChips"),
+      rankingList: $("rankingList"),
+      searchInput: $("searchInput"),
+      consumptionType: $("consumptionType"),
+      localScoreBox: $("localScoreBox"),
+      localScore: $("localScore"),
+      scorePreview: $("scorePreview"),
+      editingId: $("editingId"),
+      formTitle: $("formTitle"),
+      saveBtn: $("saveBtn"),
+      cancelEditBtn: $("cancelEditBtn"),
+      toast: $("toast")
+    };
+
+    function normalizeScore(value) {
+      const n = Number(String(value).replace(",", "."));
+      if (Number.isNaN(n)) return null;
+      return Math.max(0, Math.min(10, n));
+    }
+
+    function brScore(value) {
+      return Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    }
+
+    function escapeHTML(value = "") {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDate(date) {
+      if (!date) return "Sem data";
+      const [y, m, d] = date.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          state = JSON.parse(raw);
+        } catch (err) {
+          console.error(err);
+          state = { categories: [], reviews: [] };
+        }
+      }
+
+      if (!state.categories || !state.categories.length) {
+        state.categories = defaultCategories.map(name => ({ id: uid(), name, createdAt: new Date().toISOString() }));
+      }
+      if (!state.reviews) state.reviews = [];
+      saveState(false);
+    }
+
+    function saveState(show = true) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (show) toast("Salvo com sucesso!");
+    }
+
+    function toast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => els.toast.classList.remove("show"), 2300);
+    }
+
+    function categoryName(id) {
+      return state.categories.find(c => c.id === id)?.name || "Sem categoria";
+    }
+
+    function reviewScore(review) {
+      const base = [review.tasteScore, review.priceScore, review.serviceScore, review.presentationScore, review.portionScore];
+      if (review.consumptionType === "local" && review.localScore !== null && review.localScore !== undefined) base.push(review.localScore);
+      const valid = base.map(Number).filter(n => !Number.isNaN(n));
+      if (!valid.length) return 0;
+      return valid.reduce((sum, n) => sum + n, 0) / valid.length;
+    }
+
+    function currentFormScore() {
+      const fake = {
+        consumptionType: els.consumptionType.value,
+        tasteScore: normalizeScore($("tasteScore").value),
+        priceScore: normalizeScore($("priceScore").value),
+        serviceScore: normalizeScore($("serviceScore").value),
+        presentationScore: normalizeScore($("presentationScore").value),
+        portionScore: normalizeScore($("portionScore").value),
+        localScore: normalizeScore($("localScore").value)
+      };
+      return reviewScore(fake);
+    }
+
+    function updateScorePreview() {
+      els.scorePreview.textContent = brScore(currentFormScore());
+    }
+
+    function updateLocalVisibility() {
+      const isDelivery = els.consumptionType.value === "delivery";
+      els.localScoreBox.style.display = isDelivery ? "none" : "flex";
+      els.localScore.disabled = isDelivery;
+      if (isDelivery) els.localScore.value = "";
+      updateScorePreview();
+    }
+
+    function renderStats() {
+      const total = state.reviews.length;
+      const best = [...state.reviews].sort((a, b) => reviewScore(b) - reviewScore(a))[0];
+      const last = [...state.reviews].sort((a, b) => new Date(b.createdAt || b.reviewDate) - new Date(a.createdAt || a.reviewDate))[0];
+      const localCount = state.reviews.filter(r => r.consumptionType === "local").length;
+
+      els.stats.innerHTML = `
+        <div class="stat"><span>Avaliações</span><strong>${total}</strong></div>
+        <div class="stat"><span>Categorias</span><strong>${state.categories.length}</strong></div>
+        <div class="stat"><span>Melhor nota</span><strong>${best ? brScore(reviewScore(best)) : "0,0"}</strong></div>
+        <div class="stat"><span>No local</span><strong>${localCount}</strong></div>
+      `;
+    }
+
+    function renderCategoryOptions() {
+      const options = state.categories
+        .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+        .map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`)
+        .join("");
+
+      els.categoryId.innerHTML = options;
+      els.categoryFilter.innerHTML = `<option value="all">Todas as categorias</option>${options}`;
+    }
+
+    function renderCategoryChips() {
+      els.categoryChips.innerHTML = state.categories
+        .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+        .map(c => {
+          const count = state.reviews.filter(r => r.categoryId === c.id).length;
+          return `<span class="chip">${escapeHTML(c.name)} <small>${count}</small> <button title="Excluir categoria" onclick="deleteCategory('${c.id}')">×</button></span>`;
+        })
+        .join("");
+    }
+
+    function getFilteredReviews() {
+      const cat = els.categoryFilter.value;
+      const q = els.searchInput.value.trim().toLowerCase();
+      return state.reviews
+        .filter(r => cat === "all" || r.categoryId === cat)
+        .filter(r => {
+          if (!q) return true;
+          return [r.itemName, r.placeName, r.city, r.comment, categoryName(r.categoryId)]
+            .some(v => String(v || "").toLowerCase().includes(q));
+        })
+        .sort((a, b) => reviewScore(b) - reviewScore(a) || new Date(b.reviewDate) - new Date(a.reviewDate));
+    }
+
+    function renderRanking() {
+      const reviews = getFilteredReviews();
+
+      if (!reviews.length) {
+        els.rankingList.innerHTML = `<div class="empty"><h3>Nenhuma avaliação ainda</h3><p>Cadastre a primeira comida para começar o ranking.</p></div>`;
+        return;
+      }
+
+      els.rankingList.innerHTML = reviews.map((r, index) => {
+        const pos = index + 1;
+        const topClass = pos <= 3 ? `top-${pos}` : "";
+        const medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
+        const deliveryText = r.consumptionType === "delivery" ? "Delivery/retirada" : "No local";
+        return `
+          <article class="rank-card ${topClass}">
+            <div class="position">${medal}</div>
+            <div class="rank-main">
+              <h3>${escapeHTML(r.itemName)}</h3>
+              <div class="hint"><strong>${escapeHTML(r.placeName)}</strong>${r.city ? " • " + escapeHTML(r.city) : ""}</div>
+              <div class="meta">
+                <span class="pill">${escapeHTML(categoryName(r.categoryId))}</span>
+                <span class="pill">${deliveryText}</span>
+                <span class="pill">${escapeHTML(r.evaluator || "David & Bruna")}</span>
+                <span class="pill">${formatDate(r.reviewDate)}</span>
+              </div>
+              ${r.comment ? `<p class="note">${escapeHTML(r.comment)}</p>` : ""}
+              <p class="note">Sabor ${brScore(r.tasteScore)} • Preço ${brScore(r.priceScore)} • Atendimento ${brScore(r.serviceScore)} • Apresentação ${brScore(r.presentationScore)} • Porção ${brScore(r.portionScore)}${r.consumptionType === "local" && r.localScore !== null ? ` • Local ${brScore(r.localScore)}` : ""}</p>
+            </div>
+            <div class="rank-score"><strong>${brScore(reviewScore(r))}</strong><span>nota final</span></div>
+            <div class="card-actions">
+              <button class="btn small" onclick="editReview('${r.id}')">✏️ Editar</button>
+              <button class="btn small danger" onclick="deleteReview('${r.id}')">Excluir</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderAll() {
+      renderCategoryOptions();
+      renderCategoryChips();
+      renderStats();
+      renderRanking();
+    }
+
+    function readReviewFromForm() {
+      const consumptionType = els.consumptionType.value;
+      return {
+        id: els.editingId.value || uid(),
+        itemName: $("itemName").value.trim(),
+        placeName: $("placeName").value.trim(),
+        city: $("city").value.trim(),
+        categoryId: els.categoryId.value,
+        evaluator: $("evaluator").value,
+        consumptionType,
+        reviewDate: $("reviewDate").value,
+        tasteScore: normalizeScore($("tasteScore").value),
+        priceScore: normalizeScore($("priceScore").value),
+        serviceScore: normalizeScore($("serviceScore").value),
+        presentationScore: normalizeScore($("presentationScore").value),
+        portionScore: normalizeScore($("portionScore").value),
+        localScore: consumptionType === "local" ? normalizeScore($("localScore").value) : null,
+        comment: $("comment").value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function resetForm() {
+      els.reviewForm.reset();
+      els.editingId.value = "";
+      $("reviewDate").value = today();
+      els.formTitle.textContent = "Nova avaliação";
+      els.saveBtn.textContent = "Salvar avaliação";
+      els.cancelEditBtn.hidden = true;
+      updateLocalVisibility();
+      updateScorePreview();
+    }
+
+    els.reviewForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const review = readReviewFromForm();
+      if (!review.itemName || !review.placeName || !review.categoryId) return toast("Preencha os campos principais.");
+
+      const score = reviewScore(review);
+      if (score <= 0) return toast("Informe pelo menos uma nota válida.");
+
+      const editing = Boolean(els.editingId.value);
+      if (editing) {
+        const old = state.reviews.find(r => r.id === review.id);
+        review.createdAt = old?.createdAt || new Date().toISOString();
+        state.reviews = state.reviews.map(r => r.id === review.id ? review : r);
+      } else {
+        review.createdAt = new Date().toISOString();
+        state.reviews.push(review);
+      }
+
+      saveState();
+      resetForm();
+      renderAll();
+      document.getElementById("rankingPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    els.categoryForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = $("newCategory").value.trim();
+      if (!name) return;
+      const exists = state.categories.some(c => c.name.toLowerCase() === name.toLowerCase());
+      if (exists) return toast("Essa categoria já existe.");
+      state.categories.push({ id: uid(), name, createdAt: new Date().toISOString() });
+      $("newCategory").value = "";
+      saveState();
+      renderAll();
+    });
+
+    window.deleteCategory = function(id) {
+      const category = state.categories.find(c => c.id === id);
+      const count = state.reviews.filter(r => r.categoryId === id).length;
+      const message = count ? `Excluir a categoria "${category.name}" e ${count} avaliação(ões)?` : `Excluir a categoria "${category.name}"?`;
+      if (!confirm(message)) return;
+      state.categories = state.categories.filter(c => c.id !== id);
+      state.reviews = state.reviews.filter(r => r.categoryId !== id);
+      if (!state.categories.length) state.categories.push({ id: uid(), name: "Outro", createdAt: new Date().toISOString() });
+      saveState();
+      renderAll();
+    };
+
+    window.deleteReview = function(id) {
+      const review = state.reviews.find(r => r.id === id);
+      if (!review || !confirm(`Excluir "${review.itemName}" do ranking?`)) return;
+      state.reviews = state.reviews.filter(r => r.id !== id);
+      saveState();
+      renderAll();
+    };
+
+    window.editReview = function(id) {
+      const r = state.reviews.find(item => item.id === id);
+      if (!r) return;
+      els.editingId.value = r.id;
+      $("itemName").value = r.itemName || "";
+      $("placeName").value = r.placeName || "";
+      $("city").value = r.city || "";
+      els.categoryId.value = r.categoryId;
+      $("evaluator").value = r.evaluator || "David & Bruna";
+      els.consumptionType.value = r.consumptionType || "local";
+      $("reviewDate").value = r.reviewDate || today();
+      $("tasteScore").value = r.tasteScore ?? "";
+      $("priceScore").value = r.priceScore ?? "";
+      $("serviceScore").value = r.serviceScore ?? "";
+      $("presentationScore").value = r.presentationScore ?? "";
+      $("portionScore").value = r.portionScore ?? "";
+      $("localScore").value = r.localScore ?? "";
+      $("comment").value = r.comment || "";
+      els.formTitle.textContent = "Editar avaliação";
+      els.saveBtn.textContent = "Salvar alterações";
+      els.cancelEditBtn.hidden = false;
+      updateLocalVisibility();
+      updateScorePreview();
+      document.getElementById("formPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    function rankingMessage() {
+      const reviews = getFilteredReviews();
+      const filter = els.categoryFilter.value === "all" ? "Geral" : categoryName(els.categoryFilter.value);
+      if (!reviews.length) return "Ainda não temos avaliações nesse ranking.";
+
+      const lines = [];
+      lines.push(`🏆 Ranking da Comida — ${filter}`);
+      lines.push(`David & Bruna`);
+      lines.push("");
+      reviews.slice(0, 15).forEach((r, i) => {
+        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}º`;
+        const type = r.consumptionType === "delivery" ? "delivery" : "local";
+        lines.push(`${medal} ${r.itemName} — ${r.placeName}`);
+        lines.push(`Nota: ${brScore(reviewScore(r))} | ${categoryName(r.categoryId)} | ${type}`);
+        if (r.comment) lines.push(`Obs.: ${r.comment}`);
+        lines.push("");
+      });
+      lines.push("Ranking feito no nosso link particular 🍔✨");
+      return lines.join("\n");
+    }
+
+    async function shareRanking() {
+      const text = rankingMessage();
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Ranking copiado e abrindo WhatsApp.");
+      } catch (_) {
+        toast("Abrindo WhatsApp.");
+      }
+      window.open(url, "_blank");
+    }
+
+    function exportBackup() {
+      const data = JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ranking-comida-backup-${today()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackup(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!Array.isArray(data.categories) || !Array.isArray(data.reviews)) throw new Error("Formato inválido");
+          if (!confirm("Importar esse backup e substituir os dados atuais?")) return;
+          state.categories = data.categories;
+          state.reviews = data.reviews;
+          saveState();
+          renderAll();
+          toast("Backup importado!");
+        } catch (err) {
+          toast("Arquivo de backup inválido.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAll() {
+      if (!confirm("Tem certeza que deseja apagar todo o ranking deste navegador?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = { categories: [], reviews: [] };
+      loadState();
+      resetForm();
+      renderAll();
+      toast("Ranking limpo.");
+    }
+
+    els.consumptionType.addEventListener("change", updateLocalVisibility);
+    document.querySelectorAll(".score-input").forEach(input => input.addEventListener("input", updateScorePreview));
+    els.categoryFilter.addEventListener("change", renderRanking);
+    els.searchInput.addEventListener("input", renderRanking);
+    $("shareWhatsapp").addEventListener("click", shareRanking);
+    $("shareWhatsappTop").addEventListener("click", shareRanking);
+    $("cancelEditBtn").addEventListener("click", resetForm);
+    $("exportBtn").addEventListener("click", exportBackup);
+    $("importFile").addEventListener("change", (e) => e.target.files[0] && importBackup(e.target.files[0]));
+    $("resetBtn").addEventListener("click", resetAll);
+
+    loadState();
+    resetForm();
+    renderAll();
+  </script>
+</body>
+</html>
