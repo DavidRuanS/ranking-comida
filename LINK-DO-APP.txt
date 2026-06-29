@@ -1,0 +1,7 @@
+LINK ALTERNATIVO DO APP
+
+Use este link para abrir o Ranking da Comida sem depender do GitHub Pages:
+
+https://raw.githack.com/DavidRuanS/ranking-comida/main/index.html
+
+Observação: o código continua guardado no repositório, mas o acesso ao app fica por este link alternativo.
